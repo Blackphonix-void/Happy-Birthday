@@ -1,0 +1,866 @@
+
+/* =========================================
+   GENERAL PAGE STYLING
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: inherit;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    padding: 20px;
+
+    background: linear-gradient(
+        135deg,
+        #f8eee5,
+        #f2d9d3,
+        #ead0b9
+    );
+
+    font-family: Georgia, serif;
+    color: #ba1f43;
+}
+
+
+/* =========================================
+   PAGE LAYOUT
+========================================= */
+
+.page-container {
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 45px 20px;
+    gap: 65px;
+
+    position: relative;
+    width: 100%;
+}
+
+
+/* =========================================
+   POEM STYLING
+========================================= */
+
+.poem {
+    text-align: center;
+    max-width: 700px;
+    width: 100%;
+
+    line-height: 1.8;
+
+    position: relative;
+    z-index: 2;
+}
+
+.poem h1 {
+    color: #aa3b4b;
+    font-size: clamp(32px, 5vw, 48px);
+    margin-bottom: 25px;
+}
+
+.poem p {
+    font-size: 17px;
+    margin-bottom: 20px;
+}
+
+
+/* =========================================
+   FIREWORKS
+========================================= */
+
+#firework {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+    background: transparent !important;
+}
+
+#firework canvas {
+    display: block;
+}
+
+
+/* =========================================
+   TASK ITEM
+========================================= */
+
+.task-item {
+    --text-color: #ffffff;
+    --text-line-scale: 0;
+    --text-x: 0px;
+
+    --border-default: #7F7F85;
+    --border-hover: #E4E4E7;
+
+    --checkbox-active: #6E7BF2;
+
+    position: relative;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+
+    width: 340px;
+    max-width: 100%;
+
+    border-radius: 7px;
+    overflow: hidden;
+
+    -webkit-mask-image: -webkit-radial-gradient(white, black);
+
+    transition: background .15s linear;
+}
+
+
+/* TASK HOVER */
+
+.task-item:not(.done):hover {
+    --blur-x: 372px;
+    --blur-o: 1;
+
+    background: #2C2C31;
+}
+
+
+/* TASK GLOW */
+
+.task-item::before {
+    content: '';
+
+    position: absolute;
+
+    width: 32px;
+    height: 6px;
+
+    right: 100%;
+    top: -11px;
+
+    border-radius: 50%;
+
+    box-shadow: 0 4px 4px var(--checkbox-active);
+
+    transform: translateX(var(--blur-x, 0));
+
+    opacity: var(--blur-o, 0);
+
+    transition: opacity .15s, transform 1.2s;
+}
+
+
+/* COMPLETED TASK */
+
+.task-item.done {
+    --checkbox-active: #444449;
+    --flag-border: #444449;
+    --text-color: #626268;
+}
+
+
+/* TASK TEXT */
+
+.task-item .text {
+    display: block;
+
+    letter-spacing: -.05px;
+
+    text-decoration: none;
+
+    color: var(--text-color);
+
+    position: relative;
+
+    transform: translateX(var(--text-x)) translateZ(0);
+
+    transition: color .25s;
+}
+
+.task-item .text::before {
+    content: '';
+
+    position: absolute;
+
+    height: 1px;
+
+    left: -2px;
+    right: -2px;
+
+    top: 50%;
+
+    transform-origin: 0 50%;
+
+    transform:
+        translateY(-50%)
+        scaleX(var(--text-line-scale))
+        translateZ(0);
+
+    background: currentColor;
+}
+
+
+/* =========================================
+   CUSTOM CHECKBOX
+========================================= */
+
+.checkbox {
+    --active-tick: #ffffff;
+    --checkbox-lines-offset: 13.5px;
+
+    display: block;
+
+    padding: 15px 12px;
+
+    cursor: pointer;
+
+    position: relative;
+
+    -webkit-tap-highlight-color: transparent;
+}
+
+.checkbox svg {
+    display: block;
+    position: absolute;
+}
+
+.checkbox input {
+    display: block;
+
+    outline: none;
+    border: none;
+
+    background: none;
+
+    padding: 0;
+    margin: 0;
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    width: 18px;
+    height: 18px;
+
+    cursor: pointer;
+}
+
+
+/* CHECKBOX SHAPE */
+
+.checkbox input + svg {
+    width: 21px;
+    height: 18px;
+
+    left: 12px;
+    top: 15px;
+
+    color: var(--checkbox-active);
+
+    transition: color .25s linear;
+}
+
+
+/* CHECKBOX BORDER */
+
+.checkbox input + svg .shape {
+    stroke-width: 1.5px;
+
+    stroke: var(--border, var(--border-default));
+
+    fill: var(--background, none);
+
+    transition:
+        fill .25s linear,
+        stroke .25s linear;
+}
+
+
+/* CHECKMARK */
+
+.checkbox input + svg .tick {
+    stroke-dasharray: 20;
+
+    stroke-dashoffset: var(--checkbox-tick-offset, 20px);
+
+    transition:
+        stroke-dashoffset
+        var(--checkbox-tick-duration, .15s)
+        var(--checkbox-tick-easing, ease);
+}
+
+
+/* CHECKMARK MASK */
+
+.checkbox input + svg .tick.mask {
+    stroke: var(--active-tick);
+}
+
+
+/* CHECKBOX LINES */
+
+.checkbox input + svg + svg {
+    width: 11px;
+    height: 11px;
+
+    fill: none;
+
+    stroke: var(--checkbox-active);
+    stroke-width: 1.25;
+
+    stroke-linecap: round;
+
+    top: 9px;
+    right: 2px;
+
+    stroke-dasharray: 4.5px;
+    stroke-dashoffset: var(--checkbox-lines-offset);
+
+    pointer-events: none;
+}
+
+
+/* CHECKED STATE */
+
+.checkbox input:checked + svg {
+    --background: var(--checkbox-active);
+    --border: var(--checkbox-active);
+
+    --checkbox-tick-duration: .2s;
+
+    --checkbox-tick-easing: cubic-bezier(0, .45, 1, .5);
+
+    --checkbox-tick-offset: 0;
+}
+
+
+/* CHECKBOX HOVER */
+
+.checkbox:hover input:not(:checked) + svg {
+    --border: var(--border-hover);
+}
+
+
+/* =========================================
+   FLAG BUTTON
+========================================= */
+
+.flag {
+    --flag-color: #BABAC1;
+    --flag-fill: var(--checkbox-active);
+
+    --flag-fill-percent: 0%;
+
+    --flag-scale-x: 1;
+    --flag-scale-y: 1;
+
+    --flag-rotate: 0deg;
+
+    --flag-circle-opacity: 0;
+    --flag-circle-scale: 0;
+
+    -webkit-appearance: none;
+    appearance: none;
+
+    -webkit-tap-highlight-color: transparent;
+
+    cursor: pointer;
+
+    outline: none;
+    border: none;
+
+    background: none;
+
+    padding: 15px 12px;
+
+    margin: 0 0 0 auto;
+
+    position: relative;
+}
+
+
+/* ACTIVE FLAG */
+
+.flag.active {
+    --flag-fill-percent: 150%;
+}
+
+
+/* FLAG SVG */
+
+.flag svg {
+    display: block;
+
+    width: 18px;
+    height: 18px;
+
+    position: relative;
+    z-index: 1;
+
+    pointer-events: none;
+
+    fill: none;
+
+    stroke: var(--flag-border, var(--border, var(--border-default)));
+
+    stroke-width: 1.5;
+
+    stroke-linecap: round;
+    stroke-linejoin: round;
+
+    transform-origin: 7.66px 16.75px;
+
+    transform:
+        scale(var(--flag-scale-x), var(--flag-scale-y))
+        rotate(var(--flag-rotate));
+
+    transition: stroke .25s linear;
+}
+
+
+/* FLAG FILL */
+
+.flag svg .fill {
+    stroke: var(--flag-fill);
+    fill: var(--flag-fill);
+
+    clip-path: circle(
+        var(--flag-fill-percent)
+        at
+        var(--flag-fill-x, 7.66px)
+        var(--flag-fill-y, 16.75px)
+    );
+
+    transition:
+        fill .25s linear,
+        stroke .25s linear;
+}
+
+
+/* FLAG HOVER */
+
+.flag:hover {
+    --border: var(--border-hover);
+}
+
+
+/* FLAG CIRCLE */
+
+.flag::before {
+    content: '';
+
+    display: block;
+
+    width: 24px;
+    height: 12px;
+
+    border-radius: 50%;
+
+    position: absolute;
+
+    bottom: 6px;
+    left: 8px;
+
+    opacity: var(--flag-circle-opacity);
+
+    background: var(--flag-fill);
+
+    transform:
+        scale(var(--flag-circle-scale))
+        translateZ(0);
+}
+
+
+/* =========================================
+   PHOTO CAROUSEL
+========================================= */
+
+.card-swiper {
+    position: relative;
+
+    width: 100%;
+    height: 350px;
+
+    display: grid;
+    place-items: center;
+}
+
+.card-groups,
+.card-group,
+.card {
+    aspect-ratio: 5 / 7;
+}
+
+.card-groups,
+.card-group,
+.big-card {
+    width: 30vmin;
+    max-width: 220px;
+}
+
+.card-group {
+    position: absolute;
+
+    transition: transform 400ms ease;
+}
+
+
+/* =========================================
+   PHOTO GROUP TRANSITIONS
+========================================= */
+
+.card-group[data-status="unknown"] {
+    transform: scale(0);
+    transition: none;
+}
+
+.card-group[data-status="active"] {
+    transition-delay: 300ms;
+}
+
+.card-group[data-status="after"] {
+    transform: translateX(50%) scale(0);
+}
+
+.card-group[data-status="before"] {
+    transform: translateX(-50%) scale(0);
+}
+
+.card-group[data-status="becoming-active-from-after"] {
+    transform: translateX(50%) scale(0);
+    transition: none;
+}
+
+.card-group[data-status="becoming-active-from-before"] {
+    transform: translateX(-50%) scale(0);
+    transition: none;
+}
+
+
+/* =========================================
+   INDIVIDUAL PHOTO CARDS
+========================================= */
+
+.card {
+    background-color: #e9c9bd;
+
+    position: absolute;
+
+    transition:
+        transform 800ms cubic-bezier(.05, .43, .25, .95),
+        box-shadow 400ms ease;
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+
+    border: 3px solid #fff9f2;
+}
+
+.big-card {
+    border-radius: 12px;
+}
+
+.little-card {
+    width: 12vmin;
+
+    border-radius: 10px;
+
+    left: 50%;
+    top: 50%;
+
+    transform: translate(-50%, -50%);
+
+    box-shadow: -1vmin 1vmin 2vmin rgba(80, 40, 35, 0.2);
+
+    pointer-events: none;
+}
+
+
+/* =========================================
+   LARGE PHOTOGRAPHS
+========================================= */
+
+.big-card:nth-child(2) {
+    background-image: url("./IMG_20260524_140455.jpg");
+
+    transform: translateX(-10%) rotate(-1deg);
+}
+
+.big-card:nth-child(4) {
+    background-image: url("./IMG-20260506-WA0091.jpg");
+
+    transform: rotate(2deg);
+}
+
+.big-card:nth-child(6) {
+    background-image: url("./IMG-20251113-WA0031.jpg");
+
+    transform: translateX(-6%) rotate(-3deg);
+}
+
+.big-card:nth-child(8) {
+    background-image: url("./IMG-20260717-WA0079.jpg");
+
+    transform: translate(10%, 3%) rotate(5deg);
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400&display=swap');
+
+// Base
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  display: block;
+  height: auto;
+  min-height: 100%;
+  width: 100%;
+  font-size: max(24px, 3vw);
+  line-height: 1.4;
+  overflow-x: hidden;
+  font-family: 'Poppins', sans-serif;
+  color: black;
+  background: white;
+}
+
+body {
+  display: block;
+  min-height: 100vh;
+  overflow: hidden;
+} 
+
+// Smooth scroll
+.lenis {
+  &.lenis-smooth {
+    scroll-behavior: auto;
+
+    [data-lenis-prevent] {
+      overscroll-behavior: contain;
+    }
+  }
+
+  &.lenis-stopped {
+    overflow: hidden;
+  }
+
+  &.lenis-scrolling iframe {
+    pointer-events: none;
+  }
+}
+
+// Layout
+section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  position: relative;
+  max-width: 60%;
+  margin: 0 auto;
+}
+
+// Text reveal
+.text-reveal {
+  font-kerning: none;
+
+  .line-wrapper {
+    overflow: hidden;
+  }
+
+  .line {
+    transform: translate3d(0, 100%, 0);
+  }
+}
+
+/* =========================================
+   SMALL PHOTOGRAPHS
+========================================= */
+
+.little-card:nth-child(1) {
+    background-image: url("./20260927_104147(1).jpg");
+}
+
+.little-card:nth-child(3) {
+    background-image: url("./IMG-20251113-WA0031.jpg");
+}
+
+.little-card:nth-child(5) {
+    background-image: url("./IMG_20260214_114618.jpg");
+}
+
+.little-card:nth-child(7) {
+    background-image: url("./IMG_20260228_082101.jpg");
+}
+
+
+/* =========================================
+   PHOTO HOVER ANIMATIONS
+========================================= */
+
+.card-group:hover > .card {
+    box-shadow: -2vmin 2vmin 3vmin rgba(80, 40, 35, 0.3);
+}
+
+
+/* LARGE PHOTOS SPREAD OUT */
+
+.card-group:hover > .big-card:nth-child(2) {
+    transform: translate(-75%, 16%) rotate(-24deg);
+}
+
+.card-group:hover > .big-card:nth-child(4) {
+    transform: translate(-25%, 8%) rotate(-8deg);
+}
+
+.card-group:hover > .big-card:nth-child(6) {
+    transform: translate(25%, 8%) rotate(8deg);
+}
+
+.card-group:hover > .big-card:nth-child(8) {
+    transform: translate(75%, 16%) rotate(24deg);
+}
+
+
+/* SMALL PHOTOS MOVE AROUND */
+
+.card-group:hover > .little-card:nth-child(1) {
+    transform: translate(200%, -160%) rotate(-15deg);
+}
+
+.card-group:hover > .little-card:nth-child(3) {
+    transform: translate(160%, 170%) rotate(15deg);
+}
+
+.card-group:hover > .little-card:nth-child(5) {
+    transform: translate(-200%, -170%) rotate(15deg);
+}
+
+.card-group:hover > .little-card:nth-child(7) {
+    transform: translate(-280%, 140%) rotate(-15deg);
+}
+
+
+/* =========================================
+   CAROUSEL BUTTONS
+========================================= */
+
+.card-swiper-buttons {
+    position: absolute;
+
+    bottom: -10px;
+
+    display: flex;
+    justify-content: center;
+
+    gap: 30px;
+
+    width: 100%;
+}
+
+.card-swiper-buttons button {
+    font-size: 18px;
+
+    border: 2px solid #b87978;
+    border-radius: 50%;
+
+    color: #914f59;
+
+    background-color: #fff7f0;
+
+    height: 48px;
+    width: 48px;
+
+    display: grid;
+    place-items: center;
+
+    cursor: pointer;
+
+    transition: .3s;
+}
+
+.card-swiper-buttons button:hover {
+    background: #914f59;
+    color: white;
+}
+
+
+/* HEART BUTTON */
+
+#love-button {
+    color: #b45c68;
+    border-color: #b45c68;
+}
+
+#love-button:hover {
+    background: #b45c68;
+    color: white;
+}
+
+
+/* =========================================
+   MOBILE RESPONSIVENESS
+========================================= */
+
+@media (max-width: 600px) {
+
+    .page-container {
+        gap: 40px;
+        padding: 30px 15px;
+    }
+
+    .poem {
+        padding: 0 10px;
+    }
+
+    .poem p {
+        font-size: 15px;
+    }
+
+    .card-swiper {
+        height: 280px;
+    }
+
+    .card-groups,
+    .card-group,
+    .big-card {
+        width: 34vmin;
+    }
+
+    .little-card {
+        width: 14vmin;
+    }
+
+    .card-swiper-buttons button {
+        height: 42px;
+        width: 42px;
+    }
+
+    .task-item {
+        width: 100%;
+        max-width: 340px;
+    }
+}
